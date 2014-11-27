@@ -1,18 +1,6 @@
 /**
  * Created by jean-sebastiencote on 11/26/14.
  */
-(function(){
-
-    'use strict';
-
-    function baseService() {
-        Object.defineProperty(this, "errors", { writable: true, value: [] });
-        Object.defineProperty(this, "identity", {writable: true, value: null});
-    }
-
-    module.exports = baseService;
-
-})();
 
 (function (util) {
 
