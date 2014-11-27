@@ -1,5 +1,5 @@
 {
-  "name": "jsai-serviceMessage",
+  "name": "jsai-servicemessage",
   "version": "0.0.1",
   "description" : "classes for encapsulating message based communication in services.",
   "author" : {
