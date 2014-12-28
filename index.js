@@ -20,7 +20,7 @@
         });
     };
 
-    MessageBase.prototype.SetCorrelationId = function(){
+    MessageBase.prototype.setCorrelationId = function(){
         this.correlationId = this.generateUUID();
     };
 
@@ -29,6 +29,16 @@
     };
 
     util.inherits(ServiceMessage, MessageBase);
+
+    ServiceMessage.prototype.toJSON = function() {
+        return {correlationId: this.correlationId, data: this.data, identity: this.identity};
+    };
+
+    ServiceMessage.prototype.fromJSON = function(obj){
+        this.correlationId = obj.correlationId || this.correlationId;
+        this.data = obj.data || this.data;
+        this.identity = obj.identity ||this.identity;
+    };
 
     var ServiceResponse = function ServiceResponse(options) {
         MessageBase.call(this, options);

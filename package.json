@@ -1,6 +1,6 @@
 {
   "name": "jsai-servicemessage",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description" : "classes for encapsulating message based communication in services.",
   "author" : {
     "name" : "Jean-Sebastien Cote",
