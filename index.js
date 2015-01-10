@@ -24,26 +24,38 @@
         this.correlationId = this.generateUUID();
     };
 
+    MessageBase.prototype.toJSON = function() {
+        return {correlationId: this.correlationId, data: this.data, identity: this.identity};
+    };
+
+    MessageBase.prototype.fromJSON = function(obj){
+        this.correlationId = obj.correlationId || this.correlationId;
+        this.data = obj.data || this.data;
+        this.identity = obj.identity ||this.identity;
+    };
+
     var ServiceMessage = function ServiceMessage(options) {
         MessageBase.call(this, options);
     };
 
     util.inherits(ServiceMessage, MessageBase);
 
-    ServiceMessage.prototype.toJSON = function() {
-        return {correlationId: this.correlationId, data: this.data, identity: this.identity};
-    };
-
-    ServiceMessage.prototype.fromJSON = function(obj){
-        this.correlationId = obj.correlationId || this.correlationId;
-        this.data = obj.data || this.data;
-        this.identity = obj.identity ||this.identity;
-    };
-
     var ServiceResponse = function ServiceResponse(options) {
         MessageBase.call(this, options);
         Object.defineProperty(this, "isSuccess", { writable: true, value: true });
         Object.defineProperty(this, "errors", { writable: true, value: [] });
+    };
+
+    ServiceResponse.prototype.toJSON = function() {
+        return {correlationId: this.correlationId, data: this.data, identity: this.identity, isSuccess: this.isSuccess, errors: this.errors};
+    };
+
+    ServiceResponse.prototype.fromJSON = function(obj){
+        this.correlationId = obj.correlationId || this.correlationId;
+        this.data = obj.data || this.data;
+        this.identity = obj.identity ||this.identity;
+        this.isSuccess = obj.isSuccess;
+        this.errors = obj.errors || this.errors;
     };
 
     util.inherits(ServiceResponse, MessageBase);
