@@ -46,6 +46,8 @@
         Object.defineProperty(this, "errors", { writable: true, value: [] });
     };
 
+    util.inherits(ServiceResponse, MessageBase);
+
     ServiceResponse.prototype.toJSON = function() {
         return {correlationId: this.correlationId, data: this.data, identity: this.identity, isSuccess: this.isSuccess, errors: this.errors};
     };
@@ -58,7 +60,7 @@
         this.errors = obj.errors || this.errors;
     };
 
-    util.inherits(ServiceResponse, MessageBase);
+
 
     module.exports.ServiceMessage = ServiceMessage;
     module.exports.ServiceResponse = ServiceResponse;
