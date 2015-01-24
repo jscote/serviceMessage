@@ -25,18 +25,24 @@
     util.inherits(MessageBase, EventEmitter);
 
     MessageBase.prototype.listenToEvents = function () {
-        if (!_.isUndefined(internalConfig.messageCreatedHandler) &&
-            _.isFunction(internalConfig.messageCreatedHandler)) {
-            this.on('message.created', function(args) {
-                process.nextTick(function() {internalConfig.messageCreatedHandler(args);});
-            });
-        }
+        if(!_.isUndefined(internalConfig)) {
+            if (!_.isUndefined(internalConfig.messageCreatedHandler) &&
+                _.isFunction(internalConfig.messageCreatedHandler)) {
+                this.on('message.created', function (args) {
+                    process.nextTick(function () {
+                        internalConfig.messageCreatedHandler(args);
+                    });
+                });
+            }
 
-        if (!_.isUndefined(internalConfig.messageUpdatedHandler) &&
-            _.isFunction(internalConfig.messageUpdatedHandler)) {
-            this.on('message.updated', function(args) {
-                process.nextTick(function() {internalConfig.messageUpdatedHandler(args);});
-            });
+            if (!_.isUndefined(internalConfig.messageUpdatedHandler) &&
+                _.isFunction(internalConfig.messageUpdatedHandler)) {
+                this.on('message.updated', function (args) {
+                    process.nextTick(function () {
+                        internalConfig.messageUpdatedHandler(args);
+                    });
+                });
+            }
         }
 
     };
