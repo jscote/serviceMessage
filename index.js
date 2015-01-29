@@ -175,6 +175,7 @@
 
     ServiceResponse.prototype.createMessageContext = function (isCompleted) {
         var ctx = new MessageContext({
+            id: this.originalId, //Make sure the id of the message is equal to the original id so we keep track of only one message context per original id
             originalId: this.originalId,
             correlationId: this.correlationId,
             errors: this.errors,
