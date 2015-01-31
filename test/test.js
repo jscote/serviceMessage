@@ -66,6 +66,25 @@ module.exports = {
             test.done();
         });
     },
+    serviceResponse_createdFromServiceMessage_willTriggerEvent: function (test) {
+        var isOk = false;
+        base.configure({
+            messageCreatedHandler: function (message) {
+                if(message instanceof base.ServiceResponse) {
+                    isOk = true;
+                }
+            },
+            messageUpdatedHandler: function (message) {
+
+            }
+        });
+        var msg = new base.ServiceMessage();
+        msg.createServiceResponseFrom();
+        process.nextTick(function () {
+            test.ok(isOk);
+            test.done();
+        });
+    },
     serviceMessage_instantiate_hasAnId: function (test) {
         var msg = new base.ServiceMessage();
         test.ok(msg.id != null);
