@@ -105,6 +105,9 @@
     util.inherits(ServiceMessage, MessageBase);
 
     ServiceMessage.prototype.createServiceMessageFrom = function () {
+        if(_.isUndefined(this.correlationId) || this.correlationId == null) {
+            this.setCorrelationId();
+        }
         return new ServiceMessage({
             correlationId: this.correlationId,
             identity: this.identity,
@@ -114,7 +117,10 @@
     };
 
     ServiceMessage.prototype.createServiceResponseFrom = function () {
-        return new ServiceMessage({
+        if(_.isUndefined(this.correlationId) || this.correlationId == null) {
+            this.setCorrelationId();
+        }
+        return new ServiceResponse({
             correlationId: this.correlationId,
             identity: this.identity,
             data: this.data,
@@ -174,26 +180,35 @@
     };
 
     ServiceResponse.prototype.createMessageContext = function (isCompleted) {
+        if(_.isUndefined(this.correlationId) || this.correlationId == null) {
+            this.setCorrelationId();
+        }
         var ctx = new MessageContext({
             id: this.originalId, //Make sure the id of the message is equal to the original id so we keep track of only one message context per original id
             originalId: this.originalId,
             correlationId: this.correlationId,
             errors: this.errors,
             warnings: this.warnings,
-            isCompleted: isCompleted
+            isCompleted: _.isUndefined(isCompleted) ? false : _.isBoolean(isCompleted) ? isCompleted : false
         });
-        this.emit('message.context.created');
-        return ctx;
+         return ctx;
     };
 
 
     var MessageContext = function MessageContext(options) {
+        options = options || {};
         ServiceResponse.call(this, options);
-        Object.defineProperty(this, "isCompleted", {writable: true, value: false});
+        var optCompleted = _.isUndefined(options.isCompleted) ? false : options.isCompleted;
+        var isCompleted =  _.isBoolean(optCompleted) ? optCompleted : false;
+        Object.defineProperty(this, "isCompleted", {writable: true, value: isCompleted});
         this.emit('message.context.created', this);
     };
 
     util.inherits(MessageContext, ServiceResponse);
+
+    MessageContext.prototype.update = function () {
+        this.emit('message.context.updated', this);
+    };
 
     MessageContext.prototype.toJSON = function () {
         return {
