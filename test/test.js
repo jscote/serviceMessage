@@ -143,6 +143,8 @@ module.exports = {
         test.ok(obj.correlationId == msg.correlationId);
         test.ok(obj.originalId == msg.id);
         test.ok(obj.correlationId !== null);
+        test.ok(obj.originalTransactionTimestamp == msg.originalTransactionTimestamp);
+        test.ok(obj.originalTransactionTimestamp == msg.transactionTimestamp);
 
         test.ok(obj instanceof base.ServiceMessage);
 
@@ -158,6 +160,8 @@ module.exports = {
         test.ok(obj.correlationId == msg.correlationId);
         test.ok(obj.originalId == msg.id);
         test.ok(obj.correlationId !== null);
+        test.ok(obj.originalTransactionTimestamp == msg.originalTransactionTimestamp);
+        test.ok(obj.originalTransactionTimestamp == msg.transactionTimestamp);
 
         test.ok(obj instanceof base.ServiceResponse);
 
@@ -174,6 +178,9 @@ module.exports = {
         test.ok(obj.correlationId == msg.correlationId);
         test.ok(obj.originalId == msg.id);
         test.ok(obj.correlationId !== null);
+
+        test.ok(obj.originalTransactionTimestamp == msg.originalTransactionTimestamp);
+        test.ok(obj.originalTransactionTimestamp == msg.transactionTimestamp);
 
         test.ok(obj instanceof base.ServiceResponse);
 

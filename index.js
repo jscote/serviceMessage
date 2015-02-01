@@ -23,6 +23,18 @@
         Object.defineProperty(this, "id", {writable: true, value: _id});
         Object.defineProperty(this, "correlationId", {writable: true, value: options.correlationId || null});
         Object.defineProperty(this, "originalId", {writable: true, value: options.originalId || _id});
+        Object.defineProperty(this, "timestamp", {
+            writable: true,
+            value: options.timestamp || new Date().toUTCString()
+        });
+        Object.defineProperty(this, "transactionTimestamp", {
+            writable: true,
+            value: options.transactionTimestamp || new Date().toUTCString()
+        });
+        Object.defineProperty(this, "originalTransactionTimestamp", {
+            writable: true,
+            value: options.originalTransactionTimestamp || new Date().toUTCString()
+        });
         Object.defineProperty(this, "data", {writable: true, value: options.data || {}});
         Object.defineProperty(this, "identity", {writable: true, value: options.identity || null});
 
@@ -77,6 +89,7 @@
     };
 
     MessageBase.prototype.update = function () {
+        this.timestamp = new Date().toUTCString();
         this.emit('message.updated', this);
     };
 
@@ -86,7 +99,16 @@
     };
 
     MessageBase.prototype.toJSON = function () {
-        return {id: this.id, correlationId: this.correlationId, data: this.data, identity: this.identity};
+        return {
+            id: this.id,
+            correlationId: this.correlationId,
+            data: this.data,
+            identity: this.identity,
+            originalId: this.originalId,
+            timestamp: this.timestamp,
+            transactionTimestamp: this.transactionTimestamp,
+            originalTransactionTimestamp: this.originalTransactionTimestamp
+        };
     };
 
     MessageBase.prototype.fromJSON = function (obj) {
@@ -94,6 +116,10 @@
         this.correlationId = obj.correlationId || this.correlationId;
         this.data = obj.data || this.data;
         this.identity = obj.identity || this.identity;
+        this.originalId = obj.originalId || this.originalId;
+        this.timestamp = obj.timestamp || this.timestamp;
+        this.transactionTimestamp = obj.transactionTimestamp || this.transactionTimestamp;
+        this.originalTransactionTimestamp = obj.originalTransactionTimestamp || this.originalTransactionTimestamp;
     };
 
 
@@ -105,26 +131,28 @@
     util.inherits(ServiceMessage, MessageBase);
 
     ServiceMessage.prototype.createServiceMessageFrom = function () {
-        if(_.isUndefined(this.correlationId) || this.correlationId == null) {
+        if (_.isUndefined(this.correlationId) || this.correlationId == null) {
             this.setCorrelationId();
         }
         return new ServiceMessage({
             correlationId: this.correlationId,
             identity: this.identity,
             data: this.data,
-            originalId: this.originalId
+            originalId: this.originalId,
+            originalTransactionTimestamp: this.originalTransactionTimestamp
         });
     };
 
     ServiceMessage.prototype.createServiceResponseFrom = function () {
-        if(_.isUndefined(this.correlationId) || this.correlationId == null) {
+        if (_.isUndefined(this.correlationId) || this.correlationId == null) {
             this.setCorrelationId();
         }
         return new ServiceResponse({
             correlationId: this.correlationId,
             identity: this.identity,
             data: this.data,
-            originalId: this.originalId
+            originalId: this.originalId,
+            originalTransactionTimestamp: this.originalTransactionTimestamp
         });
     };
 
@@ -157,7 +185,11 @@
             data: this.data,
             identity: this.identity,
             isSuccess: this.isSuccess,
-            errors: this.errors
+            errors: this.errors,
+            originalId: this.originalId,
+            timestamp: this.timestamp,
+            transactionTimestamp: this.transactionTimestamp,
+            originalTransactionTimestamp: this.originalTransactionTimestamp
         };
     };
 
@@ -168,6 +200,11 @@
         this.identity = obj.identity || this.identity;
         this.isSuccess = obj.isSuccess;
         this.errors = obj.errors || this.errors;
+        this.originalId = obj.originalId || this.originalId;
+        this.timestamp = obj.timestamp || this.timestamp;
+        this.transactionTimestamp = obj.transactionTimestamp || this.transactionTimestamp;
+        this.originalTransactionTimestamp = obj.originalTransactionTimestamp || this.originalTransactionTimestamp;
+
     };
 
     ServiceResponse.prototype.addError = function (error) {
@@ -180,10 +217,10 @@
     };
 
     ServiceResponse.prototype.createMessageContext = function (isCompleted) {
-        if(_.isUndefined(this.correlationId) || this.correlationId == null) {
+        if (_.isUndefined(this.correlationId) || this.correlationId == null) {
             this.setCorrelationId();
         }
-        var ctx = new MessageContext({
+        return new MessageContext({
             id: this.originalId, //Make sure the id of the message is equal to the original id so we keep track of only one message context per original id
             originalId: this.originalId,
             correlationId: this.correlationId,
@@ -191,7 +228,6 @@
             warnings: this.warnings,
             isCompleted: _.isUndefined(isCompleted) ? false : _.isBoolean(isCompleted) ? isCompleted : false
         });
-         return ctx;
     };
 
 
@@ -199,7 +235,7 @@
         options = options || {};
         ServiceResponse.call(this, options);
         var optCompleted = _.isUndefined(options.isCompleted) ? false : options.isCompleted;
-        var isCompleted =  _.isBoolean(optCompleted) ? optCompleted : false;
+        var isCompleted = _.isBoolean(optCompleted) ? optCompleted : false;
         Object.defineProperty(this, "isCompleted", {writable: true, value: isCompleted});
         this.emit('message.context.created', this);
     };
@@ -217,7 +253,11 @@
             isCompleted: this.isCompleted,
             errors: this.errors,
             warnings: this.warnings,
-            isSuccess: this.isSuccess
+            isSuccess: this.isSuccess,
+            originalId: this.originalId,
+            timestamp: this.timestamp,
+            transactionTimestamp: this.transactionTimestamp,
+            originalTransactionTimestamp: this.originalTransactionTimestamp
         };
     };
 
@@ -228,6 +268,10 @@
         this.errors = obj.errors || this.errors;
         this.warnings = obj.warnings || this.warnings;
         this.isSuccess = obj.isSuccess || this.isSuccess;
+        this.originalId = obj.originalId || this.originalId;
+        this.timestamp = obj.timestamp || this.timestamp;
+        this.transactionTimestamp = obj.transactionTimestamp || this.transactionTimestamp;
+        this.originalTransactionTimestamp = obj.originalTransactionTimestamp || this.originalTransactionTimestamp;
     };
 
     module.exports.ServiceMessage = ServiceMessage;
