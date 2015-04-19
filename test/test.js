@@ -167,6 +167,23 @@ module.exports = {
 
         test.done();
     },
+    serviceResponse_createMessageFrom_returnsProperMessage: function (test) {
+        var msg = new base.ServiceResponse({data: 'testData', identity: {user: 1}});
+        var obj = msg.createServiceMessageFrom();
+
+        test.ok(obj.id != msg.id);
+        test.ok(obj.identity.user == msg.identity.user);
+        test.ok(obj.data == msg.data);
+        test.ok(obj.correlationId == msg.correlationId);
+        test.ok(obj.originalId == msg.id);
+        test.ok(obj.correlationId !== null);
+        test.ok(obj.originalTransactionTimestamp == msg.originalTransactionTimestamp);
+        test.ok(obj.originalTransactionTimestamp == msg.transactionTimestamp);
+
+        test.ok(obj instanceof base.ServiceMessage);
+
+        test.done();
+    },
     serviceMessage_createServiceAndResponseFromMultipleTimes_keepsOriginalId: function (test) {
         var msg = new base.ServiceMessage({data: 'testData', identity: {user: 1}});
         var obj = msg.createServiceMessageFrom();

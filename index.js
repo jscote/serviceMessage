@@ -230,6 +230,21 @@
         });
     };
 
+    ServiceResponse.prototype.createServiceMessageFrom = function () {
+        if (_.isUndefined(this.correlationId) || this.correlationId == null) {
+            this.setCorrelationId();
+        }
+        return new ServiceMessage({
+            correlationId: this.correlationId,
+            identity: this.identity,
+            data: this.data,
+            originalId: this.originalId,
+            originalTransactionTimestamp: this.originalTransactionTimestamp
+        });
+    };
+
+
+
 
     var MessageContext = function MessageContext(options) {
         options = options || {};
