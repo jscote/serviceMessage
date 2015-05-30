@@ -179,10 +179,28 @@
     util.inherits(ServiceResponse, MessageBase);
 
     ServiceResponse.prototype.toJSON = function () {
+
+        var data = null;
+        if(_.isArray(this.data)) {
+            data = [];
+            this.data.forEach(function(item) {
+                if(!_.isUndefined(item.toJSON)) {
+                    data.push(item.toJSON());
+                }
+            });
+        } else {
+            if(!_.isUndefined(this.data.toJSON)) {
+                data = this.data.toJSON();
+            } else {
+                data = this.data;
+            }
+
+        }
+
         return {
             id: this.id,
             correlationId: this.correlationId,
-            data: this.data,
+            data: data,
             identity: this.identity,
             isSuccess: this.isSuccess,
             errors: this.errors,
