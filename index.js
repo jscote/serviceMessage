@@ -208,11 +208,13 @@
     };
 
     ServiceResponse.prototype.addError = function (error) {
+        if(_.isUndefined(error) || _.isNull(error)) return;
         this.errors.push(error);
         this.isSuccess = false;
     };
 
     ServiceResponse.prototype.addWarning = function (warning) {
+        if(_.isUndefined(warning) || _.isNull(warning)) return;
         this.warnings.push(warning);
     };
 
