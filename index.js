@@ -186,6 +186,8 @@
             this.data.forEach(function(item) {
                 if(!_.isUndefined(item.toJSON)) {
                     data.push(item.toJSON());
+                } else {
+                    data.push(item);
                 }
             });
         } else {
